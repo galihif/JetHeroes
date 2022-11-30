@@ -22,7 +22,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
+import com.giftech.jetheroes.data.HeroRepository
 import com.giftech.jetheroes.model.HeroesData
 import com.giftech.jetheroes.ui.theme.JetHeroesTheme
 import kotlinx.coroutines.launch
@@ -31,10 +33,11 @@ import kotlinx.coroutines.launch
 @Composable
 fun JetHeroesApp(
     modifier: Modifier = Modifier,
+    jetViewModel: JetHeroesViewModel = viewModel(factory = ViewModelFactory(
+        HeroRepository()
+    ))
 ) {
-    val groupedHeroes = HeroesData.heroes
-        .sortedBy { it.name }
-        .groupBy { it.name[0] }
+    val groupedHeroes by jetViewModel.groupedHeroes.collectAsState()
     Box(modifier = modifier) {
         val scope = rememberCoroutineScope()
         val listState = rememberLazyListState()
